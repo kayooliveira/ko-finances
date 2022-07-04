@@ -7,13 +7,13 @@ module.exports = {
       },
       colors: {
         brand: {
-          blue: '#5429CC',
+          pink: '#D13C84',
           green: '#33CC95',
           red: '#E62E4D',
           white: '#FFFFFF',
-          title: '#363F5F',
+          title: '#FD0056',
           text: '#969CB3',
-          background: '#F0F2F5'
+          background: '#CECECE'
         }
       }
     },
