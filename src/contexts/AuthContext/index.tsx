@@ -8,6 +8,8 @@ import React, { createContext, Reducer, useEffect, useReducer } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { app } from '../../firebase'
+import { useLoading } from '../../hooks/useLoading'
+import { LoadingActions } from '../LoadingContext'
 
 type UserType = {
   name: string
@@ -33,6 +35,7 @@ type AuthContextType = {
   state: State
   dispatch: React.Dispatch<Action>
   login: () => void
+  logout: () => void
 }
 
 export enum AuthActions {
@@ -74,6 +77,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const provider = new GoogleAuthProvider()
   const auth = getAuth()
   auth.setPersistence(browserLocalPersistence)
+  const { dispatch: loadingDispatch } = useLoading()
+
+  useEffect(() => {
+    loadingDispatch({ type: LoadingActions.setLoading, payload: true })
+  }, [loadingDispatch])
 
   useEffect(() => {
     auth.onAuthStateChanged(user => {
@@ -90,28 +98,61 @@ export function AuthProvider({ children }: AuthProviderProps) {
           type: AuthActions.setIsAuthenticated,
           payload: true
         })
+        loadingDispatch({ type: LoadingActions.setLoading, payload: false })
       }
+      loadingDispatch({ type: LoadingActions.setLoading, payload: false })
     })
-  }, [auth])
+  }, [auth, loadingDispatch])
 
   async function login() {
-    const auth = getAuth(app)
-    const result = await signInWithPopup(auth, provider)
-    dispatch({
-      type: AuthActions.setUser,
-      payload: {
-        name: result.user.displayName,
-        profileAvatar: result.user.photoURL,
-        email: result.user.email
-      }
-    })
-    dispatch({
-      type: AuthActions.setIsAuthenticated,
-      payload: true
-    })
-    navigate('/')
+    try {
+      loadingDispatch({ type: LoadingActions.setLoading, payload: true })
+      const auth = getAuth(app)
+      const result = await signInWithPopup(auth, provider)
+      dispatch({
+        type: AuthActions.setUser,
+        payload: {
+          name: result.user.displayName,
+          profileAvatar: result.user.photoURL,
+          email: result.user.email
+        }
+      })
+      dispatch({
+        type: AuthActions.setIsAuthenticated,
+        payload: true
+      })
+      loadingDispatch({ type: LoadingActions.setLoading, payload: false })
+      navigate('/')
+    } catch (error) {
+      console.error(error)
+      loadingDispatch({ type: LoadingActions.setLoading, payload: false })
+    }
   }
-  console.log(state)
-  const value: AuthContextType = { state, dispatch, login }
+
+  async function logout() {
+    try {
+      loadingDispatch({ type: LoadingActions.setLoading, payload: true })
+      await auth.signOut()
+      dispatch({
+        type: AuthActions.setUser,
+        payload: {
+          name: '',
+          profileAvatar: '',
+          email: ''
+        }
+      })
+      dispatch({
+        type: AuthActions.setIsAuthenticated,
+        payload: false
+      })
+      loadingDispatch({ type: LoadingActions.setLoading, payload: false })
+      navigate('/login')
+    } catch (error) {
+      console.error(error)
+      loadingDispatch({ type: LoadingActions.setLoading, payload: false })
+    }
+  }
+
+  const value: AuthContextType = { state, dispatch, login, logout }
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
