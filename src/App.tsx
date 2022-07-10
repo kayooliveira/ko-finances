@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { Loading } from './components/Loading'
 import { AuthProvider } from './contexts/AuthContext'
 import { LoadingProvider } from './contexts/LoadingContext'
+import { TransactionProvider } from './contexts/TransactionContext'
 import { Router } from './router'
 
 export function App() {
@@ -12,8 +13,10 @@ export function App() {
     <LoadingProvider>
       <BrowserRouter>
         <AuthProvider>
-          <Loading />
-          <Router />
+          <TransactionProvider>
+            <Loading />
+            <Router />
+          </TransactionProvider>
         </AuthProvider>
         <Toaster />
       </BrowserRouter>
