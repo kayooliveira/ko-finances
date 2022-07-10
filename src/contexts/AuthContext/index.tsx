@@ -12,6 +12,7 @@ import { useLoading } from '../../hooks/useLoading'
 import { LoadingActions } from '../LoadingContext'
 
 type UserType = {
+  uid: string
   name: string
   profileAvatar: string
   email: string
@@ -25,6 +26,7 @@ type State = {
 const initialState: State = {
   isAuthenticated: false,
   user: {
+    uid: '',
     name: '',
     profileAvatar: '',
     email: ''
