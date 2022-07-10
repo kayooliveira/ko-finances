@@ -5,3 +5,7 @@
 body {
   @apply bg-brand-background text-brand-text font-brand;
 }
+
+th,td {
+  @apply py-5 px-8 align-middle;
+}
