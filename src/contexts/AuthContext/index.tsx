@@ -91,6 +91,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         dispatch({
           type: AuthActions.setUser,
           payload: {
+            uid: user.uid,
             name: user.displayName,
             profileAvatar: user.photoURL,
             email: user.email
@@ -114,6 +115,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       dispatch({
         type: AuthActions.setUser,
         payload: {
+          uid: result.user.uid,
           name: result.user.displayName,
           profileAvatar: result.user.photoURL,
           email: result.user.email
@@ -138,6 +140,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       dispatch({
         type: AuthActions.setUser,
         payload: {
+          uid: '',
           name: '',
           profileAvatar: '',
           email: ''
