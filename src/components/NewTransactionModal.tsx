@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import { ArrowCircleDown, ArrowCircleUp } from 'phosphor-react'
 import React, { Fragment, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import * as uuid from 'uuid'
 import * as yup from 'yup'
 
 import { Category } from '../@types'
@@ -21,8 +22,8 @@ const schema = yup.object().shape({
   title: yup.string().required('O título é obrigatório'),
   amount: yup
     .number()
-    .positive('O número deve ser positivo')
-    .transform(value => (isNaN(value) ? 0 : value))
+    .transform((o, v) => (v ? parseFloat(v.replace(',', '.')) : 0))
+    .positive('O valor deve ser positivo')
     .required('O valor é obrigatório'),
   category: yup
     .string()
@@ -59,12 +60,11 @@ export function NewTransactionModal() {
   function openModal() {
     setIsOpen(true)
   }
-
   function onSubmit(values: FormInputs) {
     dispatch({
       type: TransactionActions.addTransaction,
       payload: {
-        id: Math.random().toString(),
+        id: uuid.v4(),
         title: values.title,
         type: transactionType,
         amount:
@@ -140,7 +140,7 @@ export function NewTransactionModal() {
                           className="block w-full rounded-md border py-5 px-6 placeholder:text-brand-pink"
                           id="amount"
                           {...register('amount')}
-                          type="number"
+                          type="text"
                           placeholder="Preço"
                         />
                         <span className="text-xs text-brand-red">
