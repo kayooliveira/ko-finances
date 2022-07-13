@@ -26,13 +26,10 @@ export function Card({ type, ...props }: CardProps) {
   return (
     <div
       {...props}
-      className={classNames(
-        'h-[8.5rem] w-[22rem] flex-shrink-0 rounded py-6 px-8',
-        {
-          'bg-brand-green text-brand-white': type === 'total',
-          'bg-brand-white py-6 px-8 text-brand-title': type !== 'total'
-        }
-      )}
+      className={classNames('h-[8.5rem] w-[20rem] shrink-0 rounded py-6 px-8', {
+        'bg-brand-green text-brand-white': type === 'total',
+        'bg-brand-white py-6 px-8 text-brand-title': type !== 'total'
+      })}
     >
       <div className="mb-4 flex items-center justify-between">
         <span className="font-thin">{titles[type]}</span>
