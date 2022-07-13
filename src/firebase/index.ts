@@ -1,9 +1,9 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore } from 'firebase/firestore/lite'
+import { getDatabase } from 'firebase/database'
 
 import config from './config'
 
 const app = initializeApp(config)
-const db = getFirestore(app)
+const db = getDatabase(app)
 
 export { app, db }
